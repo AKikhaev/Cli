@@ -88,9 +88,6 @@ class cli {
         $commands = $_SERVER['argv']; unset($commands[0]);
         self::extractOptions($commands);
 
-        TerminalConsole::write(TerminalConsole::var_dump_export($commands),'/dev/pts/1');
-        TerminalConsole::write(TerminalConsole::var_dump_export(self::$options),'/dev/pts/1');
-
         if (isset(self::$options['bash_completion_cword'])) {
             if (self::$options['bash_completion_cword']<>'') {
                 unset($commands[self::$options['cword_num']]);
