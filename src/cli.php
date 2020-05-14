@@ -18,16 +18,8 @@ class cli {
     {
         GLOBAL $CliUser;
 
-        #function CORE_CLI_TERMINATE(){die();}
-        #pcntl_signal(SIGINT, 'CORE_CLI_TERMINATE'); // Ctrl+C
-        #pcntl_signal(SIGTERM, 'CORE_CLI_TERMINATE'); // killall myscript / kill <PID>
-        #pcntl_signal(SIGHUP, 'CORE_CLI_TERMINATE'); // обрыв связи
         $CliUser = function_exists('posix_getpwuid') ? posix_getpwuid(posix_getuid()) : array('name'=>get_current_user());
         $_SERVER['DOCUMENT_ROOT'] = getcwd();
-        //$_SERVER['HTTP_HOST'] = 'CLI:'.Env::$cfg['site_domain'];
-        //$_SERVER['SERVER_NAME'] = 'CLI:'.$cfg['site_domain'];
-        //$_SERVER['REQUEST_URI'] = core::hidePathForShow('/'.trim($GLOBALS['argv'][0],'/'));
-        //$_SERVER['REMOTE_ADDR'] = '127.0.0.1';
 
         #set_error_handler("GlobalErrorHandler");
         if (self::IS_OS_WIN) {
