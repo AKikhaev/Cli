@@ -1,4 +1,4 @@
-#AKikhaev CliRemainCalc
+#Cli
 Php automatic cli. Bash suggest and help pages just by creating classes
 * Automatic suggest list of commands. Show php doc as help.  
 
@@ -12,7 +12,7 @@ Php automatic cli. Bash suggest and help pages just by creating classes
 
 ##### Creating command
 
-* Create class extended from CliUnit.
+* Create class extended from CliUnit at commands directory.
 * All command method should ends on ..Action
 
 ##### Requirements

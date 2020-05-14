@@ -3,6 +3,7 @@
 namespace AKikhaev\Cli;
 
 use AKikhaev\Terminal\Terminal;
+use AKikhaev\Terminal\TerminalConsole;
 
 class cli {
     private static $rootCmdList = [];
@@ -57,30 +58,25 @@ class cli {
     }
     private static function extractOptions(&$commands)
     {
-
         $lastOption = '';
         foreach ($commands as $i=>$command) {
-            if (mb_strpos($command,'--')===0) {
-                $command = mb_substr($command,2);
-                self::$options[$command] = false;
+            if (mb_strpos($command,'-')===0) {
+                $params = explode('=',ltrim($command,'-'));
+                $command = $params[0];
+                unset($params[0]);
+                self::$options[$command] = implode('=',$params);
                 $lastOption = $command;
                 unset($commands[$i]);
             }
-            elseif (mb_strpos($command,'-')===0) {
-                $command = mb_substr($command,1);
-                self::$options[$command] = false;
-                $lastOption = $command;
-                unset($commands[$i]);
-            }
-            elseif ($lastOption!==''){
-                self::$options[$lastOption] = (self::$options[$lastOption] === false ? $command : self::$options[$lastOption].' '.$command);
-                unset($commands[$i]);
-            }
+//            elseif ($lastOption!==''){
+//                self::$options[$lastOption] = (self::$options[$lastOption] === false ? $command : self::$options[$lastOption].' '.$command);
+//                unset($commands[$i]);
+//            }
         }
     }
     private static function getRootCommandList(){
         if (count(self::$rootCmdList)===0) {
-            $mask = __DIR__.'cli/*.php'; // {cli/*.php,u/cli/*.php}
+            $mask = 'commands/*.php'; // {cli/*.php,u/cli/*.php}
             foreach (glob($mask, GLOB_BRACE) as $item)
                 self::$rootCmdList[basename($item, '.php')] = $item;
         }
@@ -92,9 +88,18 @@ class cli {
         $commands = $_SERVER['argv']; unset($commands[0]);
         self::extractOptions($commands);
 
-        if (isset(self::$options['bash_completion_cword']) && count($commands)<(self::$options['bash_completion_cword']===false?1:2)) {
-            die(implode(' ',array_keys(self::$rootCmdList)));
+        TerminalConsole::write(TerminalConsole::var_dump_export($commands),'/dev/pts/1');
+        TerminalConsole::write(TerminalConsole::var_dump_export(self::$options),'/dev/pts/1');
+
+        if (isset(self::$options['bash_completion_cword'])) {
+            if (self::$options['bash_completion_cword']<>'') {
+                unset($commands[self::$options['cword_num']]);
+            }
+            if (count($commands)==0) {
+                die(implode(' ',array_keys(self::$rootCmdList)));
+            }
         }
+        $commands = array_values($commands);
 
         if (count($commands)===0) {
             echo "Command list:\n";
@@ -109,8 +114,8 @@ class cli {
                 echo '  '.str_pad($cmd,$maxLenght).' - '.$description."\n";
             }
         } else {
-            $rootCommand = $commands[1];
-            unset($commands[1]);
+            $rootCommand = $commands[0];
+            unset($commands[0]);
             if (isset(self::$rootCmdList[$rootCommand])) {
                 require_once self::$rootCmdList[$rootCommand];
                 $cliUnit = new $rootCommand();
