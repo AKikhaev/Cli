@@ -8,10 +8,13 @@ Php automatic cli. Bash suggest and help pages just by creating classes
      acli [tab]
 ```
 
+Also component checks requires parameters for your users, shows help  
+
 ##### Creating command
 
 * Create class extended from CliUnit at commands directory.
 * All command method should ends on ..Action
+* Use string parameters to get any values
 
 ##### Requirements
 * PHP 7+
@@ -32,7 +35,7 @@ Php automatic cli. Bash suggest and help pages just by creating classes
     }
 ```
 * `composer install`
-* add bash suggester registration to .bash_aliases or just run register.sh
+* add bash suggester registration to .bash_aliases or just run register.sh for test purpose
 ```bash
 #mcedit ~/.bash_aliases
 

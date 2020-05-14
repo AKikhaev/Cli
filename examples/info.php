@@ -18,6 +18,24 @@ class info extends cliUnit {
      */
     public function memoryUsageAction(): void{
         Terminal::logInfo('Memory peak cli usage: ' .$this->sizeBautify(memory_get_peak_usage()));
+        Terminal::logInfo('Memory peak cli usage: ' .$this->sizeBautify(memory_get_peak_usage()));
+    }
+
+    /** Calculate folder size
+     * @param $path
+     */
+    public function folderSizeAction($folder):void {
+        $size = 0;
+        $dirIterator = new RecursiveDirectoryIterator($folder);
+        $filesIterator = new RecursiveIteratorIterator($dirIterator);
+        foreach ($filesIterator as $item) {
+            /* @var SplFileInfo $item */
+            if ($item->isFile()) {
+                $size += $item->getSize();
+            }
+        }
+
+        Terminal::logInfo("Folder  size of $folder is: " .$this->sizeBautify($size));
     }
 
 }
